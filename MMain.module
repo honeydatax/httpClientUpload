@@ -14,10 +14,10 @@ Public Sub Main()
   If Args.Count < 4 Then Quit
   f1 = Open Args[3] For Input
   s2 = ""
-  Do While Eof(f1)
-      Read #f1, ssss, 1024
-      s2 = s2 & ssss 
-  Loop
+  
+      Read #f1, s2, Lof(f1)
+  
+  
   
   ss = Args[1]
   ssss = ""
@@ -42,7 +42,7 @@ Public Sub Main()
   Do While (s.Status <> 7) And (s.Status > 0)
     Wait 0.1
   Loop
-  sss = "GET /" & ssss & " HTTP/1.0\r\n\r\n"   
+  sss = "GET /" & ssss & " HTTP/1.0\r\n"   
   If s.Status <> 7 Then 
     Print "error"
     Quit
