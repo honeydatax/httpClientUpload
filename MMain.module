@@ -1,0 +1,63 @@
+' Gambas module file
+
+Public Sub Main()
+  Dim s2 As String 
+  Dim s1 As String 
+  Dim s As Socket
+  Dim ii As Integer
+  Dim i As Integer
+  Dim ss As String
+  Dim sss As String
+  Dim ssss As String
+  Dim f1 As File
+  s = New Socket
+  If Args.Count < 4 Then Quit
+  f1 = Open Args[3] For Input
+  s2 = ""
+  Do While Eof(f1)
+      Read #f1, ssss, 1024
+      s2 = s2 & ssss 
+  Loop
+  
+  ss = Args[1]
+  ssss = ""
+  Close f1
+  sss = Args[2]
+  i = Val(sss)
+
+  ss = Replace(ss, "localhost", "127.0.0.1")
+  ss = Replace(ss, "LOCALHOST", "127.0.0.1")
+  ss = Replace(ss, "HTTP:", "")
+  ss = Replace(ss, "http:", "")
+  ss = Replace(ss, "//", "")
+  ssss = ""
+  ii = InStr(ss, "/")
+  If ii > 0 Then
+    ssss = Mid(ss, ii + 1)
+    ss = Mid(ss, 1, ii - 1)
+  Endif
+  ss = Replace(ss, "/", "")
+  Print ss
+  s.Connect(ss, i)
+  Do While (s.Status <> 7) And (s.Status > 0)
+    Wait 0.1
+  Loop
+  sss = "GET /" & ssss & " HTTP/1.0\r\n\r\n"   
+  If s.Status <> 7 Then 
+    Print "error"
+    Quit
+  Endif
+  s2 = sss & s2
+  
+  Write #s, s2, Len(s2)
+  Do While Lof(s) = 0
+    Wait 0.1
+  Loop
+  Read #s, sss, Lof(s)
+  Close s
+  ii = InStr(sss, gb.CrLf & gb.Crlf)
+  If ii > 0 Then
+    sss = Mid(sss, ii + 4)
+  Endif
+  Print sss
+  End
